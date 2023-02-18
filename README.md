@@ -13,7 +13,7 @@ To get a list of the indices use this command (~1:00):
 ```
 GET /_cat/indices
 ```
-Create an index call users without an index template (~1:04)
+Create an index called users without an index template (~1:04)
 ```
 PUT users 
 ```
@@ -112,8 +112,59 @@ PUT _index_template/my-logs
 }
 
 ```
-
-
-
+Create an index called my-user-logs (~7:58)
+```
+PUT my-user-logs 
+```
+Index a sample document containing a log entry into the my-user-logs index (~8:04)
+```
+POST my-user-logs/_doc/1
+{
+  "log_type": "ERROR",
+  "log_message": "It is not a normal error",
+  "@timestamp": "2021-06-23T09:40:16:1612"
+}
+```
+Get the settings for the my-user-logs index (~8:08)
+```
+GET my-user-logs/_settings
+```
+Get the mapping of fields for the my-user-logs index (~8:20)
+```
+GET my-user-logs/_mapping
+```
+### **Create a datastream called my-logs**
+Create an index template called arvin-ds for the datastream and it will apply to any index with the index pattern of beginning with arvin-* (~11:34)
+```
+PUT _index_template/aravind-ds
+{
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "name": "my-lifecycle-policy"
+        },
+        "number_of_replicas": 2
+      }
+    }
+  },
+  "index_patterns": [
+    "aravind-*"
+  ],
+  "data_stream": {},
+  "composed_of": [
+    "logs-mappings",
+    "logs-settings"
+  ]
+}
+```
+Create a datastream called aravind-logs (~12:05)
+```
+PUT _data_stream/aravind-logs 
+```
+Obtain information about the datastream called aravind-logs (~12:30)
+```
+GET _data_stream/aravind-logs 
+```
 #### References
 * This is the *[Daily Elastic Byte S02E13 Episode on YouTube](https://www.youtube.com/watch?v=eULpbvFJfDk)*.
